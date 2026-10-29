@@ -1,0 +1,313 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      .message-ball {
+        font-size: 20px;
+        line-height: 200px;
+        text-align: center;
+      }
+      .circle {
+        transition-property: width, height;
+        transition-duration: 2s;
+        position: fixed;
+        transform: translateX(-50%) translateY(-50%);
+        background-color: red;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <button onclick="drawCircle()">Click me</button>
+    <button onclick="callAPI()">Call API</button>
+    <button onclick="callAnotherAPI()">Call another API</button>
+    <button onclick="callBothAPIs()">Call both APIs</button>
+    <button onclick="executeGetUserAfter2seconds()">Get User After 2 seconds</button>
+    <button onclick="delayOf3sec()">Delay of 3 sec</button>
+    <button onclick="executeCustomDebounce()">Custom Debounce</button>
+    <button onclick="executeSafeDivide()">Safe Division</button>
+    <button onclick="parallelFetch()">parallel Fetch</button>
+
+    <script>
+      // debounce should accept a callback, time
+      // function customDebounce(callback, delay) {
+      //   let timeoutId;
+      //   return function (...args) {
+      //     clearTimeout(timeoutId);
+      //     timeoutId = setTimeout(() => callback.apply(this, args), delay);
+      //   };
+      // }
+
+      // const debouncedSearch = customDebounce(function (query) {
+      //   console.log("Searching for:", query);
+      // }, 500);
+
+      // //   debouncedSearch("m");
+      // //   debouncedSearch("ma");
+      // //   debouncedSearch("mad");
+
+      // function customDebounceUsingPromise(callback, delay) {
+      //   let timeoutId;
+
+      //   return function (...args) {
+      //     clearTimeout(timeoutId);
+
+      //     return new Promise((resolve) => {
+      //       timeoutId = setTimeout(() => {
+      //         resolve(callback(...args));
+      //       }, delay);
+      //     });
+      //   };
+      // }
+
+      // const debouncedFn = customDebounceUsingPromise((msg) => {
+      //   console.log(msg);
+      //   return msg;
+      // }, 500);
+
+      // //   debouncedFn("Hello").then((res) => {
+      // //     console.log("Done:", res);
+      // //   });
+
+      // //   Throttle
+      // // definition: Execute the function atmost one time within the specific interval of time
+      // // examples: scroll event, resize event, button click
+
+      // function customThrottle(callback, delay) {
+      //   let isThrottled = false;
+
+      //   return function (...args) {
+      //     if (isThrottled) return;
+
+      //     callback.apply(this, args);
+      //     isThrottled = true;
+
+      //     setTimeout(() => {
+      //       isThrottled = false;
+      //     }, delay);
+      //   };
+      // }
+
+      // const throttledFn = customThrottle(() => {
+      //   console.log("Called");
+      // }, 1000);
+
+      // //   window.addEventListener("mousemove", throttledFn);
+
+      // function delay(ms) {
+      //   return new Promise((resolve) => setTimeout(resolve, ms));
+      // }
+
+      // async function apiCallWithPromise() {
+      //   const url = "https://jsonplaceholder.typicode.com/todos/1";
+      //   return fetch(url).then((response) => {
+      //     return response.json();
+      //   });
+      // }
+
+      // async function secondApiCallWithPromise() {
+      //   await delay(5000);
+      //   const url = "https://jsonplaceholder.typicode.com/todos/2";
+      //   const res = await fetch(url);
+      //   res.json();
+      //   return new Promise((resolve, reject) => {
+      //     reject();
+      //   });
+      // }
+
+      // async function callAPI() {
+      //   // const url = "https://jsonplaceholder.typicode.com/todos/1";
+
+      //   // const response = await fetch(url)
+      //   //     .then((response) => {
+      //   //         return response.json();
+      //   //     })
+      //   //     .then((data) => {
+      //   //         console.log(data);
+      //   //     });
+      //   //
+      //   const data = await apiCallWithPromise();
+      //   console.log(data);
+      // }
+
+      // async function callAnotherAPI() {
+      //   const data = await secondApiCallWithPromise();
+      //   console.log("2nd api: ", data);
+      // }
+
+      // function callBothAPIs() {
+      //   Promise.all([apiCallWithPromise(), secondApiCallWithPromise()])
+      //     .then((res) => {
+      //       console.log(res);
+      //     })
+      //     .catch((err) => {
+      //       console.log("Some API is Failed", err);
+      //     });
+      // }
+
+      // drawCircle = () => {
+      //   showCirclePromise(150, 150, 100).then((div) => {
+      //     div.classList.add("message-ball");
+      //     div.append("Hello, world!");
+      //   });
+      // };
+
+      // showCirclePromise = (cx, cy, radius) => {
+      //   return new Promise((resolve, reject) => {
+      //     let div = document.createElement("div");
+      //     div.style.width = 0;
+      //     div.style.height = 0;
+      //     div.style.left = cx + "px";
+      //     div.style.top = cy + "px";
+      //     div.className = "circle";
+      //     document.body.append(div);
+      //     setTimeout(() => {
+      //       div.style.width = radius * 2 + "px";
+      //       div.style.height = radius * 2 + "px";
+
+      //       div.addEventListener("transitionend", function handler() {
+      //         div.removeEventListener("transitionend", handler);
+      //         resolve(div);
+      //       });
+      //     }, 0);
+      //   });
+      // };
+
+      // function go() {
+      //   showCircle(150, 150, 100, (div) => {
+      //     div.classList.add("message-ball");
+      //     div.append("Hello, world!");
+      //   });
+      // }
+
+      // function showCircle(cx, cy, radius, callback) {
+      //   let div = document.createElement("div");
+      //   div.style.width = 0;
+      //   div.style.height = 0;
+      //   div.style.left = cx + "px";
+      //   div.style.top = cy + "px";
+      //   div.className = "circle";
+      //   document.body.append(div);
+
+      //   setTimeout(() => {
+      //     div.style.width = radius * 2 + "px";
+      //     div.style.height = radius * 2 + "px";
+
+      //     div.addEventListener("transitionend", function handler() {
+      //       div.removeEventListener("transitionend", handler);
+      //       callback(div);
+      //     });
+      //   }, 0);
+      // }
+
+      // // Pollyfills
+      // Array.prototype.myMap = function (callBack) {
+      //   const result = [];
+
+      //   for (let i = 0; i < this.length; i++) {
+      //     if (i in this) {
+      //       result.push(callBack(this[i], i, this));
+      //     }
+      //   }
+
+      //   return result;
+      // };
+
+      // console.log([1, 2, 3].myMap((x) => x * 2));
+
+      // // Closures
+      // // implement a closure
+      // function increment() {
+      //   let count = 0;
+
+      //   return function () {
+      //     count++;
+      //     console.log(count);
+      //   };
+      // }
+      // const counter = increment();
+      // counter();
+      // counter();
+
+      // // Currying
+      // // implementation
+      // function add(x) {
+      //   return function (y) {
+      //     console.log(x + y);
+      //   };
+      // }
+
+      // const add10 = add(10);
+      // add10(5);
+      // // also add(10)(5)
+
+      // // memoization
+      // // cache the result of a function, so repeated calls with the same input are fast
+
+      // // pseudocode
+      // // 1. create a memoize function
+      // // 2. that function accepts a function as an argument
+      // // 3. create a cache variable
+      // // 4. create a function which accepts arguments,
+      // // 5. CHeck if the args is present in the cache
+      // // 6. if present, return the cache value
+      // // 7. else, execute the function, and store the result with args as key in the cache
+      // // 8. return the value
+      // // 9. return this function
+
+      // // Implementation
+      // function customMemoize(fn) {
+      //   // the fn also stays because of closure
+      //   const cache = {}; // this stays on because of closure
+
+      //   return function (arg) {
+      //     if (cache[arg] !== undefined) {
+      //       console.log(cache);
+            
+      //       console.log("Using memoized value");
+
+      //       return cache[arg];
+      //     }
+
+      //     const result = fn(arg);
+      //     cache[arg] = result;
+      //     console.log("Using fresh value");
+
+      //     return result;
+      //   };
+      // }
+
+      // function memoizeWithArgs(fn) {
+      //   const cache = new Map(); // Map => { key: value }
+
+      //   return function (...args) {
+      //     const key = JSON.stringify(args);
+
+      //     if(cache.has(key)) {
+      //       console.log("Using memoized value");
+      //       return cache.get(key);
+      //     }
+
+      //     const value = fn(args);
+      //     cache.set(key, value);
+      //     console.log("Using fresh value");
+      //     return value;
+      //   }
+
+      // }
+
+      // function square(n) {
+      //   return n * n;
+      // }
+
+      // const nSquare = customMemoize(square);
+      // const fiveSquare = nSquare(5);
+      // console.log("five square", fiveSquare);
+      // nSquare(5);
+    </script>
+    <!-- <script src="../concepts/flatten-array.js"></script> -->
+     <script src="./script.js"></script>
+  </body>
+</html>
